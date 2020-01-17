@@ -2,6 +2,10 @@ package com.jpo.demo;
 
 import com.jpo.demo.interfaces.MessageObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ChatMessage implements MessageObject {
 
     private String playerUUID;
@@ -22,6 +26,17 @@ public class ChatMessage implements MessageObject {
 
     public String getPlayerUUID(){
         return playerUUID;
+    }
+
+    public Position getPlayerPositionFromMessage(){
+        try {
+            final JSONObject obj = new JSONObject(message);
+            final JSONObject position = obj.getJSONObject("position");
+            return new Position(position.getInt("x"), position.getInt("y"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getMessage() {

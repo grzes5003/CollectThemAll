@@ -17,6 +17,10 @@ public class GameController {
         //TODO
     }
 
+    public void getPlayerPosition(String playerUUID){
+        //TODO
+    }
+
     public void deletePlayer(String playerUUID){
         //TODO fix me
         basicPlayerArray.remove(null);

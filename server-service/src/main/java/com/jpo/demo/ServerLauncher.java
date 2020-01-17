@@ -39,6 +39,23 @@ public class ServerLauncher {
             }
         });
 
+        server.addEventListener("requestPosition", ChatMessage.class, new DataListener<ChatMessage>() {
+            @Override
+            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                System.out.println("players pos requested: " + data.getPlayerUUID());
+                gameController.getPlayerPosition(data.getPlayerUUID());
+            }
+        });
+
+        server.addEventListener("playerMovement", ChatMessage.class, new DataListener<ChatMessage>() {
+            @Override
+            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                //System.out.println("players pos requested: " + data.getPlayerUUID());
+                gameController.setPlayerPosition(data.getPlayerUUID(), data.getPlayerPositionFromMessage());
+            }
+        });
+
+
         server.start();
 
         Thread.sleep(Integer.MAX_VALUE);

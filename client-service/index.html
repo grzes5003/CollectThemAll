@@ -45,8 +45,6 @@
             console.log("user: " + jsonObject.toString());
 
             socket.emit('newPlayer', jsonObject);
-
-            addPlayer();
         });
 
         socket.on('chatevent', function(data) {
