@@ -32,14 +32,17 @@ function preload() {
 function create(){
     var self = this;
 
+    setup(self);
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
     addPlayer(self);
 
-    var jsonObject = {userName: playerUUID,
+    var jsonObject = {userName: this.playerUUID,
         message: "moj custom"};
-    socket.emit('mine_event', jsonObject);
-    requestPosition();
+    self.socket.emit('mine_event', jsonObject);
+
+    requestPosition(self);
 }
 
 
@@ -74,7 +77,7 @@ function update(){
 
         // if position changed
         if(this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y) ){
-            this.socket.emit('playerMovement', {playerUUID: playerUUID, message: {x: this.ship.x, y: this.ship.y}});
+            this.socket.emit('playerMovement', {playerUUID: this.playerUUID, message: {x: this.ship.x, y: this.ship.y}});
         }
 
         this.ship.oldPosition = {
@@ -91,11 +94,11 @@ window.onload = () => {
 
 };
 
-function requestPosition() {
-    var jsonObject = {playerUUID: playerUUID,
+function requestPosition(self) {
+    var jsonObject = {playerUUID: self.playerUUID,
         message: "get_player_position_based_on_UUID"};
 
-    socket.emit('requestPosition', jsonObject);
+    self.socket.emit('requestPosition', jsonObject);
 }
 
 function addPlayer(self) {
@@ -105,4 +108,56 @@ function addPlayer(self) {
 function addEnemyPlayer(self, playerObject) {
     const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
 }
+
+function setup(self) {
+    self.playerUUID = 'user' + Math.floor((Math.random()*1000)+1);
+
+    self.socket =  io.connect('http://localhost:9092');
+
+    self.socket.on('connect', function() {
+
+        output('<span class="connect-msg">Client has connected to the server!</span>');
+
+        var jsonObject = {playerUUID: self.playerUUID,
+            message: "none"};
+
+        console.log("user: " + jsonObject.toString());
+
+        self.socket.emit('newPlayer', jsonObject);
+    });
+
+    self.socket.on('chatevent', function(data) {
+        output('<span class="username-msg">' + data.userName + ':</span> ' + data.message);
+    });
+
+    self.socket.on('disconnect', function() {
+        output('<span class="disconnect-msg">The client has disconnected!</span>');
+    });
+}
+
+
+function sendDisconnect() {
+    this.socket.disconnect();
+}
+
+function sendMessage() {
+    var message = $('#msg').val();
+    $('#msg').val('');
+
+    var jsonObject = {userName: userName,
+        message: message};
+    this.socket.emit('chatevent', jsonObject);
+}
+
+function output(message) {
+    var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
+    var element = $("<div>" + currentTime + " " + message + "</div>");
+    $('#console').prepend(element);
+}
+
+$(document).keydown(function(e){
+    if(e.keyCode == 13) {
+        $('#send').click();
+    }
+});
 
