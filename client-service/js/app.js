@@ -56,11 +56,6 @@ function create(){
 
     addPlayer(self);
 
-    //var jsonObject = {userName: this.playerUUID,
-    //    message: "moj custom"};
-    //self.socket.emit('mine_event', jsonObject);
-
-    //requestPosition(self);
 }
 
 
@@ -94,8 +89,6 @@ function update(){
             this.player.setVelocityY(-330);
         }
 
-        //this.physics.world.wrap(this.ship, 5);
-
 
         var x = this.player.x;
         var y = this.player.y;
@@ -107,10 +100,6 @@ function update(){
 
             this.socket.emit('playerMovement', jsonObject);
 
-            //var jsonObject = {playerUUID: this.playerUUID,
-            //    message: String(this.ship.x) + "," + String(this.ship.y) };
-
-            //this.socket.emit('playerMovementAlternative', jsonObject);
         }
 
         this.player.oldPosition = {
@@ -118,7 +107,17 @@ function update(){
             y: this.player.y
         };
 
-
+        // for enemy
+        this.otherPlayers.getChildren().forEach( function (enemy) {
+            if (enemy.oldPosition.x === enemy.x) {
+                enemy.anims.play('turn');
+            } else if (enemy.oldPosition.x > enemy.x) {
+                enemy.anims.play('left', true);
+            } else if (enemy.oldPosition.x < enemy.x) {
+                enemy.anims.play('right', true);
+            }
+            enemy.oldPosition.x = enemy.x;
+        });
     }
 }
 
@@ -165,10 +164,6 @@ function addPlayer(self) {
         repeat: -1
     });
 
-    //self.ship = self.physics.add.image(x, y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    //self.ship.setAngularDrag(100);
-    //self.ship.setMaxVelocity(200);
-
     //TODO delete redundant
     self.playersArray[self.playerUUID] = {
         x: x,
@@ -191,12 +186,19 @@ function addEnemyPlayer(self, data) {
     self.physics.add.collider(otherPlayer, self.platforms);
 
     otherPlayer.playerUUID1 = data.playerUUID;
+
+    otherPlayer.oldPosition = {
+        x: 100,
+        y: 450
+    };
+
     self.otherPlayers.add(otherPlayer);
 
     self.playersArray[otherPlayer.playerUUID] = {
         x: x,
         y: y
     }
+
 }
 
 function setup(self) {

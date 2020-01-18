@@ -49,4 +49,10 @@ public class GameController {
         }
         basicPlayerArray.remove(i);
     }
+
+    public void generateLevel(){
+
+    }
+
+
 }
