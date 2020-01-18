@@ -30,9 +30,9 @@ public class ChatMessage implements MessageObject {
 
     public Position getPlayerPositionFromMessage(){
         try {
-            final JSONObject obj = new JSONObject(message);
-            final JSONObject position = obj.getJSONObject("position");
-            return new Position(position.getInt("x"), position.getInt("y"));
+            JSONObject obj = new JSONObject(message);
+            //JSONObject position = obj.getJSONObject("message");
+            return new Position((int) obj.getDouble("x"), (int) obj.getDouble("y"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

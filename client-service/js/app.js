@@ -32,9 +32,12 @@ function preload() {
 function create(){
     var self = this;
 
+    this.playersArray = {};
+
     setup(self);
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.otherPlayers = this.physics.add.group();
 
     addPlayer(self);
 
@@ -77,7 +80,9 @@ function update(){
 
         // if position changed
         if(this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y) ){
-            this.socket.emit('playerMovement', {playerUUID: this.playerUUID, message: {x: this.ship.x, y: this.ship.y}});
+            var jsonObject = {playerUUID: this.playerUUID,
+                message: {x: this.ship.x, y: this.ship.y} };
+            this.socket.emit('playerMovement', jsonObject);
         }
 
         this.ship.oldPosition = {
@@ -102,11 +107,30 @@ function requestPosition(self) {
 }
 
 function addPlayer(self) {
-    self.ship = self.physics.add.image(100, 100, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    var x = 100;
+    var y = 100;
+
+    self.ship = self.physics.add.image(x, y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    self.ship.setAngularDrag(100);
+    self.ship.setMaxVelocity(200);
+
+    self.playersArray[self.playerUUID] = {
+        x: x,
+        y: y
+    };
 }
 
-function addEnemyPlayer(self, playerObject) {
-    const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+function addEnemyPlayer(self, data) {
+    var x = 100;
+    var y = 100;
+    const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    otherPlayer.playerUUID = data.playerUUID;
+    self.otherPlayers.add(otherPlayer);
+
+    self.playersArray[otherPlayer.playerUUID] = {
+        x: x,
+        y: y
+    }
 }
 
 function setup(self) {
@@ -132,6 +156,21 @@ function setup(self) {
 
     self.socket.on('disconnect', function() {
         output('<span class="disconnect-msg">The client has disconnected!</span>');
+    });
+
+    self.socket.on('newEnemyPlayer', function (data) {
+        if(data.playerUUID !== self.playerUUID) {
+            addEnemyPlayer(self, data);
+        }
+    });
+
+    self.socket.on('playerMovementResp', function (data) {
+        if(data.playerUUID !== self.playerUUID) {
+            // find player
+
+            // change his position
+
+        }
     });
 }
 

@@ -36,6 +36,7 @@ public class ServerLauncher {
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
                 System.out.println("player added: " + data.getPlayerUUID());
                 gameController.addPlayer(data.getPlayerUUID());
+                server.getBroadcastOperations().sendEvent("newEnemyPlayer", data);
             }
         });
 
@@ -50,10 +51,15 @@ public class ServerLauncher {
         server.addEventListener("playerMovement", ChatMessage.class, new DataListener<ChatMessage>() {
             @Override
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
-                //System.out.println("players pos requested: " + data.getPlayerUUID());
+                System.out.println("player moved: " + data.getPlayerUUID());
                 gameController.setPlayerPosition(data.getPlayerUUID(), data.getPlayerPositionFromMessage());
+                server.getBroadcastOperations().sendEvent("playerMovementResp", data);
             }
         });
+
+        //
+        //  ERROR com.corundumstudio.socketio.JsonSupportWrapper - Can't read value: ["playerMovement",{"playerUUID":"user919","message":{"x":139.11232581182298,"y":194.4741846690447}}] for type: class com.corundumstudio.socketio.protocol.Event
+        //
 
 
         server.start();

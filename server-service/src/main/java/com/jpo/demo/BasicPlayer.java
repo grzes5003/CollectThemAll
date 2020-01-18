@@ -13,4 +13,12 @@ public class BasicPlayer implements PlayerInterface {
         this.position = new Position(10,10);
         this.playerUUID = playerUUID;
     }
+
+    public String getPlayerUUID() {
+        return playerUUID;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
 }

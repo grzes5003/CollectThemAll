@@ -17,8 +17,14 @@ public class GameController {
         //TODO
     }
 
-    public void getPlayerPosition(String playerUUID){
-        //TODO
+    public Position getPlayerPosition(String playerUUID){
+        for(BasicPlayer player : basicPlayerArray){
+            if(player.getPlayerUUID().equals(playerUUID)){
+                return player.getPosition();
+            }
+        }
+        // TODO fix me
+        return new Position(0,0);
     }
 
     public void deletePlayer(String playerUUID){
