@@ -38,15 +38,19 @@ function preload() {
 function create(){
     var self = this;
 
+    self.isMap = false;
+
     this.playersArray = {};
 
     // platforms
     this.platforms = this.physics.add.staticGroup();
     this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
+/*
     this.platforms.create(600, 400, 'ground');
     this.platforms.create(50, 250, 'ground');
     this.platforms.create(750, 220, 'ground');
+    */
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.otherPlayers = this.physics.add.group();
@@ -257,6 +261,22 @@ function setup(self) {
             })
         }
     });
+
+    self.socket.on('levelLayoutResp', function (data) {
+        // parse data;
+        var stringArr = data.payload.split("|");
+        stringArr.forEach(function (str) {
+            var xy = str.split(",");
+            self.platforms.create(100*parseInt(xy[0]), 550-(125*parseInt(xy[1]) ), 'ground');
+            self.isMap = true;
+        });
+        //
+    });
+
+
+    var jsonObject = {playerUUID: self.playerUUID,
+        message: "map_request"};
+    self.socket.emit('levelLayoutReq', jsonObject);
 }
 
 

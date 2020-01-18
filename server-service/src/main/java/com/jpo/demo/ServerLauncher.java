@@ -6,6 +6,7 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.jpo.demo.socketMessages.LevelPlatformsMessage;
 import com.jpo.demo.socketMessages.PlayerObjectMessage;
 import com.jpo.demo.socketMessages.PositionMessage;
 
@@ -78,6 +79,13 @@ public class ServerLauncher {
             public void onDisconnect(SocketIOClient socketIOClient) {
                 gameController.deletePlayer(socketIOClient.getSessionId());
                 server.getBroadcastOperations().sendEvent("enemyPlayerDisconnect");
+            }
+        });
+
+        server.addEventListener("levelLayoutReq", ChatMessage.class, new DataListener<ChatMessage>() {
+            @Override
+            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                server.getBroadcastOperations().sendEvent("levelLayoutResp", gameController.getLevelPlatformsMessage());
             }
         });
 

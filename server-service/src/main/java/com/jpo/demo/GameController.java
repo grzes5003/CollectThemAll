@@ -1,13 +1,18 @@
 package com.jpo.demo;
 
+import com.jpo.demo.socketMessages.LevelPlatformsMessage;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class GameController {
+
     private ArrayList<BasicPlayer> basicPlayerArray;
+    private LevelPlatformsMessage levelPlatformsMessage;
 
     public GameController() {
         this.basicPlayerArray = new ArrayList<BasicPlayer>();
+        generateLevel();
     }
 
     public void addPlayer(String playerUUID, UUID socket_id){
@@ -51,8 +56,11 @@ public class GameController {
     }
 
     public void generateLevel(){
-
+        levelPlatformsMessage = new LevelPlatformsMessage("1,1|2,1|6,2|7,2|3,3|4,3|6,4");
     }
 
-
+    public LevelPlatformsMessage getLevelPlatformsMessage() {
+        if(levelPlatformsMessage == null) { generateLevel(); }
+        return levelPlatformsMessage;
+    }
 }
