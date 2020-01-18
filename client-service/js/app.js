@@ -8,7 +8,7 @@ var config = {
         default: 'arcade',
         arcade: {
             debug: false,
-            gravity: { y: 0 }
+            gravity: { y: 300 }
         }
     },
     scene: {
@@ -19,13 +19,19 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-
+var platforms;
 
 function preload() {
     //TODO fix me
     this.load.image('ship', 'resources/assets/spaceShips_001.png');
     this.load.image('otherPlayer', 'resources/assets/enemyBlack5.png');
     this.load.image('star', 'resources/assets/star_gold.png');
+    this.load.image('ground', 'resources/assets/platform.png');
+
+    this.load.spritesheet('dude',
+        'resources/assets/dude.png',
+        { frameWidth: 32, frameHeight: 48 }
+    );
 }
 
 
@@ -33,6 +39,14 @@ function create(){
     var self = this;
 
     this.playersArray = {};
+
+    // platforms
+    this.platforms = this.physics.add.staticGroup();
+    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+
+    this.platforms.create(600, 400, 'ground');
+    this.platforms.create(50, 250, 'ground');
+    this.platforms.create(750, 220, 'ground');
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.otherPlayers = this.physics.add.group();
@@ -51,7 +65,7 @@ function create(){
 
 
 function update(){
-    if (this.ship) {
+    if (this.player) {
 
         // controlls
 
@@ -60,29 +74,36 @@ function update(){
         // save old position
 
         if (this.cursors.left.isDown) {
-            this.ship.setAngularVelocity(-150);
+            this.player.setVelocityX(-160);
+            this.player.anims.play('left', true);
+
         } else if (this.cursors.right.isDown) {
-            this.ship.setAngularVelocity(150);
+
+            this.player.setVelocityX(160);
+            this.player.anims.play('right', true);
+
         } else {
-            this.ship.setAngularVelocity(0);
+
+            this.player.setVelocityX(0);
+            this.player.anims.play('turn');
+
         }
 
-        if (this.cursors.up.isDown) {
-            this.physics.velocityFromRotation(this.ship.rotation + 1.5, 100, this.ship.body.acceleration);
-        } else {
-            this.ship.setAcceleration(0);
+        if (this.cursors.up.isDown && this.player.body.touching.down)
+        {
+            this.player.setVelocityY(-330);
         }
 
-        this.physics.world.wrap(this.ship, 5);
+        //this.physics.world.wrap(this.ship, 5);
 
 
-        var x = this.ship.x;
-        var y = this.ship.y;
+        var x = this.player.x;
+        var y = this.player.y;
 
         // if position changed
-        if(this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y) ){
+        if(this.player.oldPosition && (x !== this.player.oldPosition.x || y !== this.player.oldPosition.y) ){
 
-            var jsonObject = {playerUUID: this.playerUUID, x: this.ship.x, y: this.ship.y };
+            var jsonObject = {playerUUID: this.playerUUID, x: this.player.x, y: this.player.y };
 
             this.socket.emit('playerMovement', jsonObject);
 
@@ -92,9 +113,9 @@ function update(){
             //this.socket.emit('playerMovementAlternative', jsonObject);
         }
 
-        this.ship.oldPosition = {
-            x: this.ship.x,
-            y: this.ship.y
+        this.player.oldPosition = {
+            x: this.player.x,
+            y: this.player.y
         };
 
 
@@ -117,9 +138,36 @@ function addPlayer(self) {
     var x = 100;
     var y = 100;
 
-    self.ship = self.physics.add.image(x, y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    self.ship.setAngularDrag(100);
-    self.ship.setMaxVelocity(200);
+    self.player = self.physics.add.sprite(100, 450, 'dude');
+
+    self.player.setBounce(0.2);
+    self.player.setCollideWorldBounds(true);
+
+    self.physics.add.collider(self.player, self.platforms);
+
+    self.anims.create({
+        key: 'left',
+        frames: self.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    self.anims.create({
+        key: 'turn',
+        frames: [ { key: 'dude', frame: 4 } ],
+        frameRate: 20
+    });
+
+    self.anims.create({
+        key: 'right',
+        frames: self.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    //self.ship = self.physics.add.image(x, y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    //self.ship.setAngularDrag(100);
+    //self.ship.setMaxVelocity(200);
 
     //TODO delete redundant
     self.playersArray[self.playerUUID] = {
