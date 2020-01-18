@@ -182,9 +182,14 @@ function addPlayer(self) {
 }
 
 function addEnemyPlayer(self, data) {
-    var x = 100;
-    var y = 100;
-    const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    //const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    const otherPlayer = self.physics.add.sprite(100, 450, 'dude');
+
+    otherPlayer.setBounce(0.2);
+    otherPlayer.setCollideWorldBounds(true);
+
+    self.physics.add.collider(otherPlayer, self.platforms);
+
     otherPlayer.playerUUID1 = data.playerUUID;
     self.otherPlayers.add(otherPlayer);
 
