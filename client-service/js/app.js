@@ -121,6 +121,7 @@ function addPlayer(self) {
     self.ship.setAngularDrag(100);
     self.ship.setMaxVelocity(200);
 
+    //TODO delete redundant
     self.playersArray[self.playerUUID] = {
         x: x,
         y: y
@@ -136,7 +137,7 @@ function addEnemyPlayer(self, data) {
     var x = 100;
     var y = 100;
     const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    otherPlayer.playerUUID = data.playerUUID;
+    otherPlayer.playerUUID1 = data.playerUUID;
     self.otherPlayers.add(otherPlayer);
 
     self.playersArray[otherPlayer.playerUUID] = {
@@ -184,15 +185,9 @@ function setup(self) {
 
     self.socket.on('playerMovementResp', function (data) {
         if(data.playerUUID !== self.playerUUID) {
-            //var tmpString = data.message.split(',');
-            // change his position
-            //self.playersArray[data.playerUUID].x = parseFloat(tmpString[0]);
-            //self.playersArray[data.playerUUID].y = parseFloat(tmpString[1]);
-
-            self.otherPlayers.getChildren().forEach( function (otherPlayer) {
-                if (data.playerUUID === otherPlayer.playerUUID) {
-                    otherPlayer.setPosition(otherPlayer.x, otherPlayer.y);
-                }
+        //TODO fix me
+            self.otherPlayers.getChildren().forEach( function (enemy) {
+                enemy.setPosition(parseFloat(data.x), parseFloat(data.y));
             })
         }
     });
