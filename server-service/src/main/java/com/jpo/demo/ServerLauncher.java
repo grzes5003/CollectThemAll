@@ -50,16 +50,14 @@ public class ServerLauncher {
             }
         });
 
-       server.addEventListener("playerMovement", PositionMessage.class, new DataListener<PositionMessage>() {
+        server.addEventListener("playerMovement", PositionMessage.class, new DataListener<PositionMessage>() {
             @Override
             public void onData(SocketIOClient client, PositionMessage data, AckRequest ackRequest) {
                 //System.out.println("player moved: " + data.getPlayerUUID());
-                gameController.setPlayerPosition(data.getPlayerUUID(), new Position( Float.parseFloat(data.getX()), Float.parseFloat(data.getY())));
+                gameController.setPlayerPosition(data.getPlayerUUID(), new Position(Float.parseFloat(data.getX()), Float.parseFloat(data.getY())));
                 server.getBroadcastOperations().sendEvent("playerMovementResp", data);
             }
         });
-
-       // enemyPlayerDataReq
 
         server.addEventListener("enemyPlayerDataReq", PlayerObjectMessage.class, new DataListener<PlayerObjectMessage>() {
             @Override
@@ -73,21 +71,6 @@ public class ServerLauncher {
                                 "otherPlayer"));
             }
         });
-
-        //
-        //  ERROR com.corundumstudio.socketio.JsonSupportWrapper - Can't read value: ["playerMovement",{"playerUUID":"user919","message":{"x":139.11232581182298,"y":194.4741846690447}}] for type: class com.corundumstudio.socketio.protocol.Event
-        //
-
-
-        /*server.addEventListener("playerMovementAlternative", ChatMessage.class, new DataListener<ChatMessage>() {
-            @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
-                //System.out.println("player moved: " + data.getPlayerUUID());
-                gameController.setPlayerPosition(data.getPlayerUUID(), data.getPlayerPosFromString());
-                server.getBroadcastOperations().sendEvent("playerMovementResp", data);
-            }
-        });*/
-
 
 
         server.start();
