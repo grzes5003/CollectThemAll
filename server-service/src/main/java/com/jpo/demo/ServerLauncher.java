@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.jpo.demo.socketMessages.PositionMessage;
 
 public class ServerLauncher {
     public static void main(String[] args) throws InterruptedException {
@@ -48,11 +49,11 @@ public class ServerLauncher {
             }
         });
 
-        server.addEventListener("playerMovement", ChatMessage.class, new DataListener<ChatMessage>() {
+       server.addEventListener("playerMovement", PositionMessage.class, new DataListener<PositionMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
-                System.out.println("player moved: " + data.getPlayerUUID());
-                gameController.setPlayerPosition(data.getPlayerUUID(), data.getPlayerPositionFromMessage());
+            public void onData(SocketIOClient client, PositionMessage data, AckRequest ackRequest) {
+                //System.out.println("player moved: " + data.getPlayerUUID());
+                gameController.setPlayerPosition(data.getPlayerUUID(), new Position( Float.parseFloat(data.getX()), Float.parseFloat(data.getY())));
                 server.getBroadcastOperations().sendEvent("playerMovementResp", data);
             }
         });
@@ -61,6 +62,15 @@ public class ServerLauncher {
         //  ERROR com.corundumstudio.socketio.JsonSupportWrapper - Can't read value: ["playerMovement",{"playerUUID":"user919","message":{"x":139.11232581182298,"y":194.4741846690447}}] for type: class com.corundumstudio.socketio.protocol.Event
         //
 
+
+        /*server.addEventListener("playerMovementAlternative", ChatMessage.class, new DataListener<ChatMessage>() {
+            @Override
+            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                //System.out.println("player moved: " + data.getPlayerUUID());
+                gameController.setPlayerPosition(data.getPlayerUUID(), data.getPlayerPosFromString());
+                server.getBroadcastOperations().sendEvent("playerMovementResp", data);
+            }
+        });*/
 
         server.start();
 

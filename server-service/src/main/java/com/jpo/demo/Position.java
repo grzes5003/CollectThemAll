@@ -1,10 +1,10 @@
 package com.jpo.demo;
 
 public class Position {
-    public int x;
-    public int y;
+    public float x;
+    public float y;
 
-    public Position(int x, int y) {
+    public Position(float x, float y) {
         this.x = x;
         this.y = y;
     }

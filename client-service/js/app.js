@@ -34,10 +34,11 @@ function create(){
 
     this.playersArray = {};
 
-    setup(self);
-
     this.cursors = this.input.keyboard.createCursorKeys();
     this.otherPlayers = this.physics.add.group();
+
+    setup(self);
+
 
     addPlayer(self);
 
@@ -45,7 +46,7 @@ function create(){
         message: "moj custom"};
     self.socket.emit('mine_event', jsonObject);
 
-    requestPosition(self);
+    //requestPosition(self);
 }
 
 
@@ -80,9 +81,15 @@ function update(){
 
         // if position changed
         if(this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y) ){
-            var jsonObject = {playerUUID: this.playerUUID,
-                message: {x: this.ship.x, y: this.ship.y} };
+
+            var jsonObject = {playerUUID: this.playerUUID, x: this.ship.x, y: this.ship.y };
+
             this.socket.emit('playerMovement', jsonObject);
+
+            //var jsonObject = {playerUUID: this.playerUUID,
+            //    message: String(this.ship.x) + "," + String(this.ship.y) };
+
+            //this.socket.emit('playerMovementAlternative', jsonObject);
         }
 
         this.ship.oldPosition = {
@@ -166,10 +173,16 @@ function setup(self) {
 
     self.socket.on('playerMovementResp', function (data) {
         if(data.playerUUID !== self.playerUUID) {
-            // find player
-
+            //var tmpString = data.message.split(',');
             // change his position
+            //self.playersArray[data.playerUUID].x = parseFloat(tmpString[0]);
+            //self.playersArray[data.playerUUID].y = parseFloat(tmpString[1]);
 
+            self.otherPlayers.getChildren().forEach( function (otherPlayer) {
+                if (data.playerUUID === otherPlayer.playerUUID) {
+                    otherPlayer.setPosition(otherPlayer.x, otherPlayer.y);
+                }
+            })
         }
     });
 }

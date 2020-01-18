@@ -28,7 +28,7 @@ public class ChatMessage implements MessageObject {
         return playerUUID;
     }
 
-    public Position getPlayerPositionFromMessage(){
+/*    public Position getPlayerPositionFromMessage(){
         try {
             JSONObject obj = new JSONObject(message);
             //JSONObject position = obj.getJSONObject("message");
@@ -37,7 +37,16 @@ public class ChatMessage implements MessageObject {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
+
+    /*public Position getPlayerPosFromString(){
+        String whynot = new String(message);
+        if(message.contains("[a-zA-Z]+")){
+            return new Position(100,100);
+        }
+        String[] tmp = whynot.split(",");
+        return new Position((int) Double.parseDouble(tmp[0]), (int) Double.parseDouble(tmp[1]));
+    }*/
 
     public String getMessage() {
         return message;
