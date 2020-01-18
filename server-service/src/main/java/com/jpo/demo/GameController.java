@@ -1,6 +1,7 @@
 package com.jpo.demo;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class GameController {
     private ArrayList<BasicPlayer> basicPlayerArray;
@@ -9,8 +10,8 @@ public class GameController {
         this.basicPlayerArray = new ArrayList<BasicPlayer>();
     }
 
-    public void addPlayer(String playerUUID){
-        basicPlayerArray.add(new BasicPlayer(playerUUID));
+    public void addPlayer(String playerUUID, UUID socket_id){
+        basicPlayerArray.add(new BasicPlayer(playerUUID, socket_id));
     }
 
     public void setPlayerPosition(String playerUUID, Position position){
@@ -37,8 +38,15 @@ public class GameController {
         return new Position(-1,-1);
     }
 
-    public void deletePlayer(String playerUUID){
+    public void deletePlayer(UUID socketID){
         //TODO fix me
-        basicPlayerArray.remove(null);
+        int i = 0;
+        for(BasicPlayer basicPlayer : basicPlayerArray){
+            if (socketID == basicPlayer.getSocket_id()){
+                break;
+            }
+            i++;
+        }
+        basicPlayerArray.remove(i);
     }
 }

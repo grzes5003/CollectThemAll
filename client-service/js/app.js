@@ -177,6 +177,17 @@ function setup(self) {
         output('<span class="disconnect-msg">The client has disconnected!</span>');
     });
 
+    self.socket.on('enemyPlayerDisconnect', function() {
+        output('<span class="disconnect-msg">Enemy player has disconnected!</span>');
+
+        self.otherPlayers.getChildren().forEach(function (enemy) {
+            //if (playerId === otherPlayer.playerId) {
+                enemy.destroy();
+            //}
+        });
+
+    });
+
     self.socket.on('enemyPlayerDataResp', function (data) {
         if(data.x != -1) {
             addEnemyPlayer(self, data);

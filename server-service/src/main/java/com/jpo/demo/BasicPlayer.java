@@ -2,18 +2,27 @@ package com.jpo.demo;
 
 import com.jpo.demo.interfaces.PlayerInterface;
 
+import java.util.UUID;
+
 public class BasicPlayer implements PlayerInterface {
 
     private Position position;
     private String playerUUID;
     private String sprite_name;
-
+    private UUID socket_id;
 
 
     public BasicPlayer(String playerUUID) {
         this.position = new Position(10,10);
         this.playerUUID = playerUUID;
         this.sprite_name = "";
+    }
+
+    public BasicPlayer(String playerUUID, UUID socket_id) {
+        this.position = new Position(10,10);
+        this.playerUUID = playerUUID;
+        this.sprite_name = "";
+        this.socket_id = socket_id;
     }
 
     public String getPlayerUUID() {
@@ -30,5 +39,9 @@ public class BasicPlayer implements PlayerInterface {
 
     public String getSprite_name() {
         return sprite_name;
+    }
+
+    public UUID getSocket_id() {
+        return socket_id;
     }
 }
