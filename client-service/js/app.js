@@ -42,9 +42,9 @@ function create(){
 
     addPlayer(self);
 
-    var jsonObject = {userName: this.playerUUID,
-        message: "moj custom"};
-    self.socket.emit('mine_event', jsonObject);
+    //var jsonObject = {userName: this.playerUUID,
+    //    message: "moj custom"};
+    //self.socket.emit('mine_event', jsonObject);
 
     //requestPosition(self);
 }
@@ -125,6 +125,11 @@ function addPlayer(self) {
         x: x,
         y: y
     };
+
+    var jsonObject = {playerUUID: self.playerUUID, message: "requested_data" };
+
+    self.socket.emit('enemyPlayerDataReq', jsonObject);
+
 }
 
 function addEnemyPlayer(self, data) {
@@ -145,6 +150,12 @@ function setup(self) {
 
     self.socket =  io.connect('http://localhost:9092');
 
+    self.socket.on('newEnemyPlayer', function (data) {
+        if(data.playerUUID !== self.playerUUID) {
+            addEnemyPlayer(self, data);
+        }
+    });
+
     self.socket.on('connect', function() {
 
         output('<span class="connect-msg">Client has connected to the server!</span>');
@@ -152,7 +163,7 @@ function setup(self) {
         var jsonObject = {playerUUID: self.playerUUID,
             message: "none"};
 
-        console.log("user: " + jsonObject.toString());
+        console.log("user: " + jsonObject.playerUUID);
 
         self.socket.emit('newPlayer', jsonObject);
     });
@@ -165,8 +176,8 @@ function setup(self) {
         output('<span class="disconnect-msg">The client has disconnected!</span>');
     });
 
-    self.socket.on('newEnemyPlayer', function (data) {
-        if(data.playerUUID !== self.playerUUID) {
+    self.socket.on('enemyPlayerDataResp', function (data) {
+        if(data.x != -1) {
             addEnemyPlayer(self, data);
         }
     });

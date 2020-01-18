@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
+import com.jpo.demo.socketMessages.PlayerObjectMessage;
 import com.jpo.demo.socketMessages.PositionMessage;
 
 public class ServerLauncher {
@@ -55,6 +56,21 @@ public class ServerLauncher {
                 //System.out.println("player moved: " + data.getPlayerUUID());
                 gameController.setPlayerPosition(data.getPlayerUUID(), new Position( Float.parseFloat(data.getX()), Float.parseFloat(data.getY())));
                 server.getBroadcastOperations().sendEvent("playerMovementResp", data);
+            }
+        });
+
+       // enemyPlayerDataReq
+
+        server.addEventListener("enemyPlayerDataReq", PlayerObjectMessage.class, new DataListener<PlayerObjectMessage>() {
+            @Override
+            public void onData(SocketIOClient client, PlayerObjectMessage data, AckRequest ackRequest) {
+                System.out.println("enemy object requested: " + data.getPlayerUUID());
+                Position pos = gameController.getEnemyPosition(data.getPlayerUUID());
+                System.out.println("enemy position : " + pos.x);
+                server.getBroadcastOperations().sendEvent("enemyPlayerDataResp",
+                        new PlayerObjectMessage(data.getPlayerUUID(),
+                                String.valueOf(pos.x), String.valueOf(pos.y),
+                                "otherPlayer"));
             }
         });
 

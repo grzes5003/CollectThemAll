@@ -24,7 +24,17 @@ public class GameController {
             }
         }
         // TODO fix me
-        return new Position(0,0);
+        return new Position(-1,-1);
+    }
+
+    public Position getEnemyPosition(String my_playerUUID){
+        for(BasicPlayer player : basicPlayerArray){
+            if(!player.getPlayerUUID().equals(my_playerUUID)){
+                return player.getPosition();
+            }
+        }
+        // TODO fix me
+        return new Position(-1,-1);
     }
 
     public void deletePlayer(String playerUUID){
