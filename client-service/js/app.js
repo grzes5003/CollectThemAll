@@ -41,6 +41,12 @@ function preload() {
         'resources/assets/sprites_final.png',
         { frameWidth: 48, frameHeight: 100 }
     );
+
+    this.load.spritesheet(
+        'student_enemy',
+        'resources/assets/sprites_final_enemy.png',
+        { frameWidth: 48, frameHeight: 100 }
+    );
 }
 
 
@@ -142,12 +148,12 @@ function update(){
         // for enemy
         this.otherPlayers.getChildren().forEach( function (enemy) {
             if (enemy.oldPosition.x === enemy.x) {
-                enemy.anims.play('idle');
+                enemy.anims.play('idle_enemy');
             } else if (enemy.oldPosition.x > enemy.x) {
-                enemy.anims.play('left', true);
+                enemy.anims.play('left_enemy', true);
                 enemy.flipX = true;
             } else if (enemy.oldPosition.x < enemy.x) {
-                enemy.anims.play('right', true);
+                enemy.anims.play('right_enemy', true);
                 enemy.flipX = false;
             }
             enemy.oldPosition.x = enemy.x;
@@ -225,12 +231,33 @@ function addPlayer(self) {
 
 function addEnemyPlayer(self, data) {
     //const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    const otherPlayer = self.physics.add.sprite(100, 450, 'student');
+    const otherPlayer = self.physics.add.sprite(100, 450, 'student_enemy');
 
     otherPlayer.setBounce(0.2);
     otherPlayer.setCollideWorldBounds(true);
 
     self.physics.add.collider(otherPlayer, self.platforms);
+
+    self.anims.create({
+        key: 'left_enemy',
+        frames: self.anims.generateFrameNumbers('student_enemy', { start: 6, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    self.anims.create({
+        key: 'idle_enemy',
+        frames: self.anims.generateFrameNumbers('student_enemy', { start: 0, end: 2 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    self.anims.create({
+        key: 'right_enemy',
+        frames: self.anims.generateFrameNumbers('student_enemy', { start: 6, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
 
     otherPlayer.playerUUID1 = data.playerUUID;
 
