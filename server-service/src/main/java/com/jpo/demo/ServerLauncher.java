@@ -95,10 +95,11 @@ public class ServerLauncher {
         server.addEventListener("starCollected", ChatMessage.class, new DataListener<ChatMessage>() {
             @Override
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                System.out.println("Star collected by: " + data.getPlayerUUID());
                 // add point
                 gameController.addPoint(data.getPlayerUUID());
                 // generate new star
-                server.getBroadcastOperations().sendEvent("newStar", new PositionMessage("star","100","100"));
+                server.getBroadcastOperations().sendEvent("newStar", new PositionMessage( data.getPlayerUUID(),"100","100"));
             }
         });
 

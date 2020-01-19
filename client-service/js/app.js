@@ -40,8 +40,8 @@ function create(){
     var self = this;
 
     self.isMap = false;
+    self.isStar = false;
 
-    this.playersArray = {};
 
     // platforms
     this.platforms = this.physics.add.staticGroup();
@@ -141,11 +141,6 @@ function update(){
     }
 }
 
-
-window.onload = () => {
-
-};
-
 function requestPosition(self) {
     var jsonObject = {playerUUID: self.playerUUID,
         message: "get_player_position_based_on_UUID"};
@@ -184,12 +179,6 @@ function addPlayer(self) {
         repeat: -1
     });
 
-    //TODO delete redundant
-    self.playersArray[self.playerUUID] = {
-        x: x,
-        y: y
-    };
-
     var jsonObject = {playerUUID: self.playerUUID, message: "requested_data" };
 
     self.socket.emit('enemyPlayerDataReq', jsonObject);
@@ -214,10 +203,6 @@ function addEnemyPlayer(self, data) {
 
     self.otherPlayers.add(otherPlayer);
 
-    self.playersArray[otherPlayer.playerUUID] = {
-        x: x,
-        y: y
-    }
 
 }
 
@@ -291,10 +276,21 @@ function setup(self) {
 
 
     self.socket.on('newStar', function (data) {
-        self.stars.create(parseFloat(data.x),parseFloat(data.y),'star');
-        self.stars.children.iterate(function (child) {
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
+
+        if(data.playerUUID !== self.playerUUID){
+            self.stars.children.iterate(function (child) {
+                child.destroy();
+            });
+            self.isStar = false;
+        }
+
+        if(!self.isStar) {
+            self.stars.create(parseFloat(data.x), parseFloat(data.y), 'star');
+            self.stars.children.iterate(function (child) {
+                child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+            });
+            self.isStar = true;
+        }
     });
 
     var jsonObject = {playerUUID: self.playerUUID,
@@ -322,20 +318,12 @@ function output(message) {
     $('#console').prepend(element);
 }
 
-function addStar(stars) {
-
-}
-
 function collectStar(player, star){
     star.destroy();
     //star.disableBody(true, true);
     var jsonObj = {playerUUID: player.playerUUID, message: "star_collected"};
     this.socket.emit('starCollected', jsonObj);
+    this.isStar = false;
 }
 
-$(document).keydown(function(e){
-    if(e.keyCode == 13) {
-        $('#send').click();
-    }
-});
 
