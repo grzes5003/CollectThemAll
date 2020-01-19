@@ -1,7 +1,7 @@
 var config = {
     title: "Starfall",
     width: 800,
-    height: 600,
+    height: 800,
     parent: "game",
     backgroundColor: "#18216D",
     physics: {
@@ -29,9 +29,17 @@ function preload() {
     this.load.image('ground', 'resources/assets/platform.png');
     this.load.image('star', 'resources/assets/star_gold.png');
 
+    this.load.image('agh_bcg', 'resources/assets/agh2_big.png');
+
     this.load.spritesheet('dude',
         'resources/assets/dude.png',
         { frameWidth: 32, frameHeight: 48 }
+    );
+
+    this.load.spritesheet(
+        'student',
+        'resources/assets/sprites_final.png',
+        { frameWidth: 48, frameHeight: 100 }
     );
 }
 
@@ -42,10 +50,12 @@ function create(){
     self.isMap = false;
     self.isStar = false;
 
+    // background
+    this.add.image(340,400, 'agh_bcg').setScale(0.89);
 
     // platforms
     this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    this.platforms.create(400, 798, 'ground').setScale(2).refreshBody();
 
     // stars
     //this.stars = this.physics.add.group({
@@ -91,16 +101,18 @@ function update(){
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
             this.player.anims.play('left', true);
+            this.player.flipX = true;
 
         } else if (this.cursors.right.isDown) {
 
             this.player.setVelocityX(160);
             this.player.anims.play('right', true);
+            this.player.flipX = false;
 
         } else {
 
             this.player.setVelocityX(0);
-            this.player.anims.play('turn');
+            this.player.anims.play('idle');
 
         }
 
@@ -130,11 +142,13 @@ function update(){
         // for enemy
         this.otherPlayers.getChildren().forEach( function (enemy) {
             if (enemy.oldPosition.x === enemy.x) {
-                enemy.anims.play('turn');
+                enemy.anims.play('idle');
             } else if (enemy.oldPosition.x > enemy.x) {
                 enemy.anims.play('left', true);
+                enemy.flipX = true;
             } else if (enemy.oldPosition.x < enemy.x) {
                 enemy.anims.play('right', true);
+                enemy.flipX = false;
             }
             enemy.oldPosition.x = enemy.x;
         });
@@ -152,14 +166,15 @@ function addPlayer(self) {
     var x = 100;
     var y = 100;
 
-    self.player = self.physics.add.sprite(100, 450, 'dude');
+    // self.player = self.physics.add.sprite(100, 450, 'dude');
+    self.player = self.physics.add.sprite(100, 450, 'student');
 
     self.player.setBounce(0.2);
     self.player.setCollideWorldBounds(true);
 
     self.physics.add.collider(self.player, self.platforms);
 
-    self.anims.create({
+    /*self.anims.create({
         key: 'left',
         frames: self.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
         frameRate: 10,
@@ -177,7 +192,30 @@ function addPlayer(self) {
         frames: self.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
         frameRate: 10,
         repeat: -1
+    });*/
+
+    self.anims.create({
+        key: 'left',
+        frames: self.anims.generateFrameNumbers('student', { start: 6, end: 8 }),
+        frameRate: 10,
+        repeat: -1
     });
+
+    self.anims.create({
+        key: 'idle',
+        frames: self.anims.generateFrameNumbers('student', { start: 0, end: 2 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    self.anims.create({
+        key: 'right',
+        frames: self.anims.generateFrameNumbers('student', { start: 6, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+
 
     var jsonObject = {playerUUID: self.playerUUID, message: "requested_data" };
 
@@ -187,7 +225,7 @@ function addPlayer(self) {
 
 function addEnemyPlayer(self, data) {
     //const otherPlayer = self.add.sprite(x, y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    const otherPlayer = self.physics.add.sprite(100, 450, 'dude');
+    const otherPlayer = self.physics.add.sprite(100, 450, 'student');
 
     otherPlayer.setBounce(0.2);
     otherPlayer.setCollideWorldBounds(true);
