@@ -274,7 +274,7 @@ function addEnemyPlayer(self, data) {
 function setup(self) {
     self.playerUUID = 'user' + Math.floor((Math.random()*1000)+1);
 
-    self.socket =  io.connect('http://localhost:9092');
+    self.socket =  io.connect('http://192.168.178.80:9092');
 
     self.socket.on('newEnemyPlayer', function (data) {
         if(data.playerUUID !== self.playerUUID) {

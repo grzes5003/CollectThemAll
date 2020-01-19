@@ -16,7 +16,7 @@ public class ServerLauncher {
         final GameController gameController = new GameController();
 
         Configuration config = new Configuration();
-        config.setHostname("localhost");
+        config.setHostname("192.168.178.80");
         config.setPort(9092);
 
         final SocketIOServer server = new SocketIOServer(config);
