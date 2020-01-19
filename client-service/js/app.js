@@ -306,7 +306,7 @@ function setup(self) {
         var stringArr = data.payload.split("|");
         stringArr.forEach(function (str) {
             var xy = str.split(",");
-            self.platforms.create(100*parseInt(xy[0]), 550-(125*parseInt(xy[1]) ), 'ground');
+            self.platforms.create(100*parseInt(xy[0]), 850-(200*parseInt(xy[1]) ), 'ground');
             self.isMap = true;
         });
         //

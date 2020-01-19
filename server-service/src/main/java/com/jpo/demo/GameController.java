@@ -56,7 +56,7 @@ public class GameController {
     }
 
     public void generateLevel(){
-        levelPlatformsMessage = new LevelPlatformsMessage("1,2|2,2|6,2|7,2|3,3|4,3|6,4");
+        levelPlatformsMessage = new LevelPlatformsMessage("1,1|2,1|6,2|7,2|3,3|4,3|6,4");
     }
 
     public LevelPlatformsMessage getLevelPlatformsMessage() {
