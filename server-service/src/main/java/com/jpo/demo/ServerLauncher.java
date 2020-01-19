@@ -96,6 +96,7 @@ public class ServerLauncher {
             @Override
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
                 // add point
+                gameController.addPoint(data.getPlayerUUID());
                 // generate new star
                 server.getBroadcastOperations().sendEvent("newStar", new PositionMessage("star","100","100"));
             }

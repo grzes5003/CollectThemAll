@@ -67,4 +67,12 @@ public class GameController {
     public int getNumberOfplayers(){
         return basicPlayerArray.size();
     }
+
+    public void addPoint(String playerUUID){
+        for(BasicPlayer player : basicPlayerArray){
+            if(player.getPlayerUUID().equals(playerUUID)){
+                player.addPoint();
+            }
+        }
+    }
 }
