@@ -63,4 +63,8 @@ public class GameController {
         if(levelPlatformsMessage == null) { generateLevel(); }
         return levelPlatformsMessage;
     }
+
+    public int getNumberOfplayers(){
+        return basicPlayerArray.size();
+    }
 }

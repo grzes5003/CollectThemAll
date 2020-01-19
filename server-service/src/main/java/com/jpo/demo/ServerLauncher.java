@@ -39,6 +39,9 @@ public class ServerLauncher {
             @Override
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
                 System.out.println("player added: " + data.getPlayerUUID());
+                if(gameController.getNumberOfplayers() == 0){
+                    server.getBroadcastOperations().sendEvent("newStar", new PositionMessage("star","100","100"));
+                }
                 gameController.addPlayer(data.getPlayerUUID(), client.getSessionId());
                 server.getBroadcastOperations().sendEvent("newEnemyPlayer", data);
             }
@@ -86,6 +89,15 @@ public class ServerLauncher {
             @Override
             public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
                 server.getBroadcastOperations().sendEvent("levelLayoutResp", gameController.getLevelPlatformsMessage());
+            }
+        });
+
+        server.addEventListener("starCollected", ChatMessage.class, new DataListener<ChatMessage>() {
+            @Override
+            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+                // add point
+                // generate new star
+                server.getBroadcastOperations().sendEvent("newStar", new PositionMessage("star","100","100"));
             }
         });
 

@@ -27,6 +27,7 @@ function preload() {
     this.load.image('otherPlayer', 'resources/assets/enemyBlack5.png');
     this.load.image('star', 'resources/assets/star_gold.png');
     this.load.image('ground', 'resources/assets/platform.png');
+    this.load.image('star', 'resources/assets/star_gold.png');
 
     this.load.spritesheet('dude',
         'resources/assets/dude.png',
@@ -46,7 +47,19 @@ function create(){
     this.platforms = this.physics.add.staticGroup();
     this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
-/*
+    // stars
+    //this.stars = this.physics.add.group({
+    //    key: 'star',
+    //    repeat: 0,
+    //    setXY: { x: 100, y: 100, stepX: 70 }
+    //});
+
+    this.stars = this.physics.add.group();
+
+    this.physics.add.collider(this.stars, this.platforms);
+
+
+    /*
     this.platforms.create(600, 400, 'ground');
     this.platforms.create(50, 250, 'ground');
     this.platforms.create(750, 220, 'ground');
@@ -59,6 +72,9 @@ function create(){
 
 
     addPlayer(self);
+
+    // add physics for player getting stars
+    this.physics.add.overlap(this.player, this.stars, collectStar, null, this);
 
 }
 
@@ -274,6 +290,13 @@ function setup(self) {
     });
 
 
+    self.socket.on('newStar', function (data) {
+        self.stars.create(parseFloat(data.x),parseFloat(data.y),'star');
+        self.stars.children.iterate(function (child) {
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        });
+    });
+
     var jsonObject = {playerUUID: self.playerUUID,
         message: "map_request"};
     self.socket.emit('levelLayoutReq', jsonObject);
@@ -297,6 +320,17 @@ function output(message) {
     var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss.SSS') + "</span>";
     var element = $("<div>" + currentTime + " " + message + "</div>");
     $('#console').prepend(element);
+}
+
+function addStar(stars) {
+
+}
+
+function collectStar(player, star){
+    star.destroy();
+    //star.disableBody(true, true);
+    var jsonObj = {playerUUID: player.playerUUID, message: "star_collected"};
+    this.socket.emit('starCollected', jsonObj);
 }
 
 $(document).keydown(function(e){
