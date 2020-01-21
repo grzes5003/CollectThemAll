@@ -60,8 +60,10 @@ public class GameController {
 
 
     public void generateLevel(){
-        levelPlatformsMessage = new LevelPlatformsMessage("1,3|2,3|6,2|7,2|3,3|4,3|6,4");
-        System.out.println(Tools.generatePlatforms(8));
+        //levelPlatformsMessage = new LevelPlatformsMessage("1,3|2,3|6,2|7,2|3,3|4,3|6,4");
+        String platform = Tools.generatePlatforms(7);
+        System.out.println(platform);
+        levelPlatformsMessage = new LevelPlatformsMessage(platform);
     }
 
     public LevelPlatformsMessage getLevelPlatformsMessage() {

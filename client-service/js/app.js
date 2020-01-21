@@ -26,7 +26,7 @@ function preload() {
     this.load.image('ship', 'resources/assets/spaceShips_001.png');
     this.load.image('otherPlayer', 'resources/assets/enemyBlack5.png');
     this.load.image('star', 'resources/assets/star_gold.png');
-    this.load.image('ground', 'resources/assets/platform.png');
+    this.load.image('ground', 'resources/assets/platform_back.png');
     this.load.image('real_ground', 'resources/assets/real_ground.png');
     this.load.image('star', 'resources/assets/star_gold.png');
 

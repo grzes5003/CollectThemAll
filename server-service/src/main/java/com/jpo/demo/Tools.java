@@ -14,57 +14,58 @@ public class Tools {
 
 
     public static String generatePlatforms(int platforms_count){
-        ArrayList<ArrayList> platforms = new ArrayList<ArrayList>();
+        ArrayList<Platform> platforms = new ArrayList<Platform>();
 
         for(int i = 0; i < platforms_count; i++){
-            ArrayList tmp_platform = randomPlatform();
+            Platform tmp_platform = randomPlatform();
             int rep = -1;
             while((rep = platforms.indexOf(tmp_platform))!= -1){ //if generated the same platform as before try again
                 tmp_platform = randomPlatform(platforms.get(rep));
             };
-            platforms.set(i, tmp_platform);
+            platforms.add(tmp_platform);
         }
 
-        int[] invalid_platform = null;
+        Platform invalid_platform = null;
         while ((invalid_platform = checkPlatforms(platforms))!= null){
-            int[] tmp = randomPlatform(invalid_platform);
-            int invalid_platform_idx = findArrayInArray(platforms, invalid_platform);
-            platforms[invalid_platform_idx] = tmp;
+            Platform tmp = randomPlatform(invalid_platform);
+            int invalid_platform_idx = platforms.indexOf(invalid_platform);
+            platforms.set(invalid_platform_idx, tmp);
         }
 
         return platformsToGrzesiekFrontNotion(platforms);
     }
 
-    public static ArrayList randomPlatform(ArrayList exclude){
-        ArrayList platform = new ArrayList();
+    public static Platform randomPlatform(Platform exclude){
+        Platform platform = new Platform();
         Random rd = new Random();
 
         do{
-        platform.set(0, 1 + rd.nextInt(max_width));
-        platform.set(1, 1 + rd.nextInt(max_height));
+            platform.setX(1 + rd.nextInt(max_width));
+            platform.setY(1 + rd.nextInt(max_height));
         }while (platform.equals(exclude));
 
         return platform;
 
     } //refac
 
-    public static ArrayList randomPlatform(){
-        ArrayList platform = new ArrayList();
+    public static Platform randomPlatform(){
+        Platform platform = new Platform();
         Random rd = new Random();
-        platform.set(0, 1 + rd.nextInt(max_width));
-        platform.set(1, 1 + rd.nextInt(max_height));
+
+        platform.setX(rd.nextInt(max_width));
+        platform.setY(rd.nextInt(max_height));
 
         return platform;
 
     } //refac
 
-    public static int[] checkPlatforms(int[][] platforms){
-        ArrayList flawed_platform = findPlatformDistandFromPlatform(platforms, min_x_dist, min_y_dist);
+    public static Platform checkPlatforms(ArrayList<Platform> platforms){
+        Platform flawed_platform = findPlatformDistandFromPlatform(platforms, min_x_dist, min_y_dist);
         if(flawed_platform != null)
             return flawed_platform;
 
         return null;
-    }
+    } //refac
 
     public static int[] isArrayInArray(int[][] search_array, int[] pattern){
         for (int[] cur_array:search_array) {
@@ -82,36 +83,37 @@ public class Tools {
         return -1;
     }
 
-    public static int[] findPlatformDistandFromPlatform(ArrayList<ArrayList<Integer>> platforms, int x_distance, int y_distance) {
+
+    public static Platform findPlatformDistandFromPlatform(ArrayList<Platform> platforms, int x_distance, int y_distance) {
         /*Look for any platform which is closer than {x OR y}_distance [Grzegorz front-end block unit]
         from another platform
         @return: int[] found platform OR null if not found
         */
 
-        for (ArrayList<Integer> platform:platforms) {
-            for (ArrayList<Integer> rem_platform:platforms) {
+        for (Platform platform:platforms) {
+            for (Platform rem_platform:platforms) {
                 if(platform == rem_platform)
                     continue;   //skip if looks for itself
-                if(Math.abs((platform.get(0) - rem_platform.get(0)) < x_distance)
+                if(Math.abs((platform.getX()) - rem_platform.getX()) < x_distance)
                     return rem_platform;
-                if(Math.abs(platform[1] - rem_platform[1]) < y_distance)
+                if(Math.abs(platform.getY() - rem_platform.getY()) < y_distance)
                     return rem_platform;
             }
         }
         return null;
-    }
+    } //refac
 
-    public static String platformsToGrzesiekFrontNotion(int[][] platforms){
+    public static String platformsToGrzesiekFrontNotion(ArrayList<Platform> platforms){
         StringBuilder g_notion = new StringBuilder("");
 
-        for (int[] platform:platforms) {
-            g_notion.append(platform[0]);
+        for (Platform platform:platforms) {
+            g_notion.append(platform.getX());
             g_notion.append(",");
-            g_notion.append(platform[1]);
+            g_notion.append(platform.getY());
             g_notion.append("|");
         }
 
         g_notion.deleteCharAt(g_notion.lastIndexOf("|"));
         return g_notion.toString();
-    }
+    } //refac
 }
