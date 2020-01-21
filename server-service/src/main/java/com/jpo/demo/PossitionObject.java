@@ -1,5 +1,6 @@
 package com.jpo.demo;
 
+import com.jpo.demo.dataClasses.Position;
 import com.jpo.demo.interfaces.MessageObject;
 
 public class PossitionObject implements MessageObject {

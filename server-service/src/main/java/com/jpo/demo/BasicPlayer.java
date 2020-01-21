@@ -1,5 +1,6 @@
 package com.jpo.demo;
 
+import com.jpo.demo.dataClasses.Position;
 import com.jpo.demo.interfaces.PlayerInterface;
 
 import java.util.UUID;

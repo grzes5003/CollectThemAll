@@ -1,5 +1,6 @@
-package com.jpo.demo;
+package com.jpo.demo.socketMessages;
 
+import com.jpo.demo.dataClasses.Position;
 import org.json.JSONException;
 import org.json.JSONObject;
 

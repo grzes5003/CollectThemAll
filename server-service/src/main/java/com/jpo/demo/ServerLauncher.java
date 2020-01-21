@@ -6,7 +6,9 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.jpo.demo.socketMessages.LevelPlatformsMessage;
+import com.jpo.demo.dataClasses.GeneratorConstatnts;
+import com.jpo.demo.dataClasses.Position;
+import com.jpo.demo.socketMessages.DefaultMessage;
 import com.jpo.demo.socketMessages.PlayerObjectMessage;
 import com.jpo.demo.socketMessages.PositionMessage;
 
@@ -16,28 +18,28 @@ public class ServerLauncher {
         final GameController gameController = new GameController();
 
         Configuration config = new Configuration();
-        config.setHostname("192.168.178.80");
-        config.setPort(9092);
+        config.setHostname(GeneratorConstatnts.SERVER_IP_NUMBER);
+        config.setPort(GeneratorConstatnts.PORT_NUMBER);
 
         final SocketIOServer server = new SocketIOServer(config);
-        server.addEventListener("chatevent", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("chatevent", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 // broadcast messages to all clients
                 server.getBroadcastOperations().sendEvent("chatevent", data);
             }
         });
 
-        server.addEventListener("mine_event", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("mine_event", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 System.out.println("custom event");
             }
         });
 
-        server.addEventListener("newPlayer", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("newPlayer", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 System.out.println("player added: " + data.getPlayerUUID());
                 if(gameController.getNumberOfplayers() == 0){
                     server.getBroadcastOperations().sendEvent("newStar", new PositionMessage("star","100","100"));
@@ -47,9 +49,9 @@ public class ServerLauncher {
             }
         });
 
-        server.addEventListener("requestPosition", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("requestPosition", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 System.out.println("players pos requested: " + data.getPlayerUUID());
                 gameController.getPlayerPosition(data.getPlayerUUID());
             }
@@ -85,16 +87,16 @@ public class ServerLauncher {
             }
         });
 
-        server.addEventListener("levelLayoutReq", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("levelLayoutReq", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 server.getBroadcastOperations().sendEvent("levelLayoutResp", gameController.getLevelPlatformsMessage());
             }
         });
 
-        server.addEventListener("starCollected", ChatMessage.class, new DataListener<ChatMessage>() {
+        server.addEventListener("starCollected", DefaultMessage.class, new DataListener<DefaultMessage>() {
             @Override
-            public void onData(SocketIOClient client, ChatMessage data, AckRequest ackRequest) {
+            public void onData(SocketIOClient client, DefaultMessage data, AckRequest ackRequest) {
                 System.out.println("Star collected by: " + data.getPlayerUUID());
                 // add point
                 gameController.addPoint(data.getPlayerUUID());

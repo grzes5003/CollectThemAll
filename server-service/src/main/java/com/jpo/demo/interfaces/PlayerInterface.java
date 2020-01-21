@@ -1,3 +1,8 @@
 package com.jpo.demo.interfaces;
 
-public interface PlayerInterface {}
+import com.jpo.demo.dataClasses.Position;
+
+public interface PlayerInterface {
+    String getPlayerUUID();
+    Position getPosition();
+}

@@ -1,4 +1,4 @@
-package com.jpo.demo;
+package com.jpo.demo.dataClasses;
 
 public class Position {
     public float x;

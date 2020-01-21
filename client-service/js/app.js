@@ -1,5 +1,5 @@
 var config = {
-    title: "Starfall",
+    title: "PlatformGame",
     width: 800,
     height: 800,
     parent: "game",
@@ -23,18 +23,11 @@ var platforms;
 
 function preload() {
     //TODO fix me
-    this.load.image('ship', 'resources/assets/spaceShips_001.png');
-    this.load.image('otherPlayer', 'resources/assets/enemyBlack5.png');
     this.load.image('star', 'resources/assets/star_gold.png');
     this.load.image('ground', 'resources/assets/platform.png');
     this.load.image('star', 'resources/assets/star_gold.png');
 
     this.load.image('agh_bcg', 'resources/assets/agh2_big.png');
-
-    this.load.spritesheet('dude',
-        'resources/assets/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
-    );
 
     this.load.spritesheet(
         'student',
@@ -63,23 +56,9 @@ function create(){
     this.platforms = this.physics.add.staticGroup();
     this.platforms.create(400, 798, 'ground').setScale(2).refreshBody();
 
-    // stars
-    //this.stars = this.physics.add.group({
-    //    key: 'star',
-    //    repeat: 0,
-    //    setXY: { x: 100, y: 100, stepX: 70 }
-    //});
-
     this.stars = this.physics.add.group();
 
     this.physics.add.collider(this.stars, this.platforms);
-
-
-    /*
-    this.platforms.create(600, 400, 'ground');
-    this.platforms.create(50, 250, 'ground');
-    this.platforms.create(750, 220, 'ground');
-    */
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.otherPlayers = this.physics.add.group();
@@ -180,25 +159,6 @@ function addPlayer(self) {
 
     self.physics.add.collider(self.player, self.platforms);
 
-    /*self.anims.create({
-        key: 'left',
-        frames: self.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    self.anims.create({
-        key: 'turn',
-        frames: [ { key: 'dude', frame: 4 } ],
-        frameRate: 20
-    });
-
-    self.anims.create({
-        key: 'right',
-        frames: self.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        frameRate: 10,
-        repeat: -1
-    });*/
 
     self.anims.create({
         key: 'left',
@@ -274,7 +234,7 @@ function addEnemyPlayer(self, data) {
 function setup(self) {
     self.playerUUID = 'user' + Math.floor((Math.random()*1000)+1);
 
-    self.socket =  io.connect('http://192.168.178.80:9092');
+    self.socket =  io.connect('http://192.168.178.86:9092');
 
     self.socket.on('newEnemyPlayer', function (data) {
         if(data.playerUUID !== self.playerUUID) {
@@ -333,7 +293,7 @@ function setup(self) {
         var stringArr = data.payload.split("|");
         stringArr.forEach(function (str) {
             var xy = str.split(",");
-            self.platforms.create(100*parseInt(xy[0]), 850-(200*parseInt(xy[1]) ), 'ground');
+            self.platforms.create(100*parseInt(xy[0]), 850-(150*parseInt(xy[1]) ), 'ground');
             self.isMap = true;
         });
         //
