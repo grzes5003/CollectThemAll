@@ -58,6 +58,12 @@ public class GameController {
     }
 
     public void generateLevel(){
+        /*
+        String platform = PlatformGenerator.generatePlatforms(7);
+        System.out.println(platform);
+        levelPlatformsMessage = new LevelPlatformsMessage(platform);
+        */
+
         String s1 = "0,3|3,1|2,2|7,3|4,4";
         String s2 = "1,1|2,1|6,2|7,2|3,3|4,3|6,4";
         levelPlatformsMessage = new LevelPlatformsMessage(s1);
