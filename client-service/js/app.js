@@ -49,6 +49,12 @@ function create(){
     self.isMap = false;
     self.isStar = false;
 
+    // text
+    this.info = this.add.text(10, 10, 'text', { font: '24px Arial Bold', fill: '#FBFBAC' });
+
+    this.starsCaughtPlayer = 0;
+    this.starsCaughtEnemy = 0;
+
     // background
     this.add.image(340,400, 'agh_bcg').setScale(0.89);
 
@@ -137,6 +143,9 @@ function update(){
             }
             enemy.oldPosition.x = enemy.x;
         });
+
+        // text update
+        this.info.text = this.starsCaughtPlayer + " masz ectsow, " + this.starsCaughtEnemy + "  ma przeciwnik ";
     }
 }
 

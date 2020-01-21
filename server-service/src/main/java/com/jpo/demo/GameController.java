@@ -4,6 +4,7 @@ import com.jpo.demo.dataClasses.Position;
 import com.jpo.demo.socketMessages.LevelPlatformsMessage;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
 public class GameController {
@@ -57,7 +58,7 @@ public class GameController {
     }
 
     public void generateLevel(){
-        String s1 = "0,3|3,1|2,2";
+        String s1 = "0,3|3,1|2,2|7,3|4,4";
         String s2 = "1,1|2,1|6,2|7,2|3,3|4,3|6,4";
         levelPlatformsMessage = new LevelPlatformsMessage(s1);
     }
@@ -77,5 +78,20 @@ public class GameController {
                 player.addPoint();
             }
         }
+    }
+
+    public Position generateStarPosition(){
+        Random random = new Random();
+        int a = random.nextInt((3 - 1) + 1) + 1;
+
+        switch (a){
+            case 1:
+                return new Position(100,150);
+            case 2:
+                return new Position(400,150);
+            case 3:
+                return new Position(300,500);
+        }
+        return new Position(100,100);
     }
 }

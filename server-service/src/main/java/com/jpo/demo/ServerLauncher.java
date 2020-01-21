@@ -101,7 +101,9 @@ public class ServerLauncher {
                 // add point
                 gameController.addPoint(data.getPlayerUUID());
                 // generate new star
-                server.getBroadcastOperations().sendEvent("newStar", new PositionMessage( data.getPlayerUUID(),"100","100"));
+                Position pos = gameController.generateStarPosition();
+
+                server.getBroadcastOperations().sendEvent("newStar", new PositionMessage( data.getPlayerUUID(), String.valueOf(pos.x), String.valueOf(pos.y)));
             }
         });
 
