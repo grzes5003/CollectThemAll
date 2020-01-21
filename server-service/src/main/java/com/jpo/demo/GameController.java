@@ -88,8 +88,8 @@ public class GameController {
 
     public Position generateStarPosition(){
         Random random = new Random();
-        int a = random.nextInt((3 - 1) + 1) + 1;
-
+        int a = random.nextInt((4 - 1) + 1) + 1;
+        //int a = 4;
         switch (a){
             case 1:
                 return new Position(100,150);
@@ -97,6 +97,8 @@ public class GameController {
                 return new Position(400,150);
             case 3:
                 return new Position(300,500);
+            case 4:
+                return new Position(600,600);
         }
         return new Position(100,100);
     }
