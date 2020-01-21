@@ -27,6 +27,7 @@ function preload() {
     this.load.image('otherPlayer', 'resources/assets/enemyBlack5.png');
     this.load.image('star', 'resources/assets/star_gold.png');
     this.load.image('ground', 'resources/assets/platform.png');
+    this.load.image('real_ground', 'resources/assets/real_ground.png');
     this.load.image('star', 'resources/assets/star_gold.png');
 
     this.load.image('agh_bcg', 'resources/assets/agh2_big.png');
@@ -61,7 +62,7 @@ function create(){
 
     // platforms
     this.platforms = this.physics.add.staticGroup();
-    this.platforms.create(400, 798, 'ground').setScale(2).refreshBody();
+    this.platforms.create(400, 798, 'real_ground').setScale(2).refreshBody();
 
     // stars
     //this.stars = this.physics.add.group({
@@ -274,7 +275,7 @@ function addEnemyPlayer(self, data) {
 function setup(self) {
     self.playerUUID = 'user' + Math.floor((Math.random()*1000)+1);
 
-    self.socket =  io.connect('http://192.168.178.80:9092');
+    self.socket =  io.connect('http://127.0.0.2:9092');
 
     self.socket.on('newEnemyPlayer', function (data) {
         if(data.playerUUID !== self.playerUUID) {

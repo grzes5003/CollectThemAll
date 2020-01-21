@@ -1,8 +1,10 @@
 package com.jpo.demo;
 
+import com.jpo.demo.dataClasses.GeneratorConstatnts;
 import com.jpo.demo.socketMessages.LevelPlatformsMessage;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
 public class GameController {
@@ -55,8 +57,11 @@ public class GameController {
         basicPlayerArray.remove(i);
     }
 
+
+
     public void generateLevel(){
-        levelPlatformsMessage = new LevelPlatformsMessage("1,1|2,1|6,2|7,2|3,3|4,3|6,4");
+        levelPlatformsMessage = new LevelPlatformsMessage("1,3|2,3|6,2|7,2|3,3|4,3|6,4");
+        System.out.println(Tools.generatePlatforms(8));
     }
 
     public LevelPlatformsMessage getLevelPlatformsMessage() {
